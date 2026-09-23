@@ -101,8 +101,47 @@ public class SinglyLinkedList<E extends Comparable<E>> {
 
     // write your codes here
     public void swap(){
-        
+        // Do nothing if the list is empty or has only one node
+        if (isEmpty() || size() == 1){
+            return;
+        }
 
+        // Create an array of nodes
+        Node<E>[] nodes = new Node[size];
+        Node<E> current = head;
+        for (int i = 0; i < size; i++){
+            nodes[i] = current;
+            current = current.getNext();
+        }
+
+        // Create a sorted array of nodes
+        Node<E>[] sortedNodes = nodes.clone();
+        Arrays.sort(sortedNodes, (a, b) -> a.getElement().compareTo(b.getElement()));
+
+        // Create a map of nodes to swap
+        Map<Node<E>, Node<E>> swapMap = new HashMap<>();
+        for (int i = 0; i < (size+1)/2; i++) {
+            Node<E> smaller = sortedNodes[i];
+            Node<E> larger = sortedNodes[size - i - 1];
+            swapMap.put(smaller, larger);
+            swapMap.put(larger, smaller);
+        }
+
+        // Create an array of swapped nodes
+        Node<E>[] swappedNodes = new Node[size];
+        for (int i = 0; i < size; i++){
+            swappedNodes[i] = swapMap.get(nodes[i]);
+        }
+
+        // Set the next pointers of the swapped nodes
+        for (int i = 0; i < size-1; i++){
+            swappedNodes[i].setNext(swappedNodes[i+1]);
+        }
+        swappedNodes[size-1].setNext(null);
+
+        // Set the head and tail of the linked list
+        head = swappedNodes[0];
+        tail = swappedNodes[size-1];
     }
    
 }
